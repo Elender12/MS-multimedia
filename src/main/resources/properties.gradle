@@ -1,0 +1,95 @@
+def springPropsMap_LOCAL = [
+        //MICROSERVICE CONFIGURATION
+        'microserviceName'                    : 'MULTIMEDIA',
+        'serverPort'                          : '9020',
+        'adminToken'                          : '',
+
+
+        //SECURITY
+        'jwtSecret'                           : '',
+
+        //DATABASE
+        'springDataMongodbHost'               : 'localhost',
+        'springDataMongodbPort'               : '27017',
+        'springDataMongodbUser'               : '',
+        'springDataMongodbPass'               : '',
+        'springDataMongodbDatabase'           : 'creepyrabbit-multimedia',
+
+        //STORAGE
+        'springServletMultipartMaxFileSize'   : '50MB',
+        'springServletMultipartMaxRequestSize': '50MB',
+
+        //STORAGE FTP
+        'storageFtpHost'                      : '',
+        'storageFtpPort'                      : '',
+        'storageFtpUser'                      : '',
+        'storageFtpPass'                      : '',
+        'storageFtpPath'                      : '/'
+]
+
+
+def springPropsMap_DEV = [
+        //MICROSERVICE CONFIGURATION
+        'microserviceName'                    : 'MULTIMEDIA',
+        'serverPort'                          : '9020',
+        'adminToken'                          : 'Bearer ',
+
+        //SECURITY
+        'jwtSecret'                           : '',
+
+        //DATABASE
+        'springDataMongodbHost'               : '',
+        'springDataMongodbPort'               : '',
+        'springDataMongodbUser'               : '',
+        'springDataMongodbPass'               : '',
+        'springDataMongodbDatabase'           : '',
+
+        //STORAGE
+        'springServletMultipartMaxFileSize'   : '500MB',
+        'springServletMultipartMaxRequestSize': '500MB',
+
+        //STORAGE FTP
+        'storageFtpHost'                      : '',
+        'storageFtpPort'                      : '',
+        'storageFtpUser'                      : '',
+        'storageFtpPass'                      : '',
+        'storageFtpPath'                      : ''
+]
+
+
+def springPropsMap_QA = [
+        //MICROSERVICE CONFIGURATION
+        'microserviceName'                    : 'MULTIMEDIA',
+        'serverPort'                          : '9020',
+        'adminToken'                          : 'Bearer ',
+
+        //SECURITY
+        'jwtSecret'                           : '',
+
+        //DATABASE
+        'springDataMongodbHost'               : '',
+        'springDataMongodbPort'               : '',
+        'springDataMongodbUser'               : '',
+        'springDataMongodbPass'               : '',
+        'springDataMongodbDatabase'           : '',
+
+        //STORAGE
+        'springServletMultipartMaxFileSize'   : '10MB',
+        'springServletMultipartMaxRequestSize': '10MB',
+
+        //STORAGE FTP
+        'storageFtpHost'                      : '',
+        'storageFtpPort'                      : '',
+        'storageFtpUser'                      : '',
+        'storageFtpPass'                      : '',
+        'storageFtpPath'                      : ''
+]
+
+
+
+
+project.ext.springPropertiesContainer = [
+        'LOCAL'   : springPropsMap_LOCAL,
+        'DEV'     : springPropsMap_DEV,
+        'QA'      : springPropsMap_QA
+]
