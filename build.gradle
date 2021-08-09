@@ -1,3 +1,5 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
 buildscript {
 	ext {
 		springBootVersion = '2.3.4.RELEASE'
@@ -10,21 +12,18 @@ buildscript {
 	}
 }
 plugins {
-	id 'org.springframework.boot' version '2.5.3'
-	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-	id 'java'
+	id 'maven-publish'
+	id 'eclipse'
+	id "org.springframework.boot" version "2.3.4.RELEASE"
 }
 apply plugin: 'java'
+apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
-group = 'com.ecirstea'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
 
 repositories {
 	mavenCentral()
 }
-
 
 group = 'com.ecirstea.multimedia'
 version = '0.0.1'
@@ -33,7 +32,7 @@ targetCompatibility = 1.8
 
 apply from: "${project.projectDir}/src/main/resources/properties.gradle"
 
-def currentProfile = 'LOCAL';
+def currentProfile = 'LOCAL'
 
 if (project.hasProperty('profile')) {
 	currentProfile = project.properties['profile'].toString().toUpperCase();
@@ -42,12 +41,41 @@ if (project.hasProperty('profile')) {
 println("Current Profile is ${currentProfile}")
 def currentSpringProperties = project.springPropertiesContainer[currentProfile]
 
-if (currentSpringProperties == null) {
-	def out = services.get(StyledTextOutputFactory).create("my-factory")
-	out.withStyle(StyledTextOutput.Style.FailureHeader).println("No Spring properties found for profile ${project.properties['profile']}")
-}
 currentSpringProperties['destinationEnvironment'] = currentProfile;
 
+publishing {
+	publications {
+		mavenJava(MavenPublication) { from components.java }
+	}
+}
+processResources {
+	from('src/main/resources') {
+		include 'application.properties'
+		filter(ReplaceTokens, tokens: currentSpringProperties)
+		setDuplicatesStrategy(DuplicatesStrategy.INCLUDE)
+	}
+
+}
+
+jar {
+	enabled = true
+	baseName = rootProject.name
+
+
+}
+
+
+
+configurations.all {
+	resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+
+}
+
+
+bootJar {
+	baseName = rootProject.name
+
+}
 
 
 dependencies {
@@ -65,6 +93,14 @@ dependencies {
 	implementation group: 'com.github.joschi.jackson', name: 'jackson-datatype-threetenbp', version: '2.4.1'
 	implementation("com.github.joschi.jackson:jackson-datatype-threetenbp:2.6.4")
 	implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.6.0'
+	implementation group: 'commons-net', name: 'commons-net', version: '3.8.0'
+	implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
+	implementation group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
+	implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
+	implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
+
+
+
 
 }
 

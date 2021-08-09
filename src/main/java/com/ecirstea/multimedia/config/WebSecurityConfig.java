@@ -78,6 +78,8 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter implements WebMvcCo
             .authorizeRequests()
 
             .antMatchers("/",
+                "/download/*",
+                "/multimedias",
                 "/healthcheck",
                 "/config",
                 "/swagger-ui.html",

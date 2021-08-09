@@ -1,12 +1,12 @@
 def springPropsMap_LOCAL = [
         //MICROSERVICE CONFIGURATION
         'microserviceName'                    : 'MULTIMEDIA',
-        'serverPort'                          : '9020',
+        'serverPort'                          : '9801',
         'adminToken'                          : '',
 
 
         //SECURITY
-        'jwtSecret'                           : '',
+        'jwtSecret'                          :'IW)9vET(Pls+H¡Q-/R2¿a6pAZI./W(ebL´2yrR%W7ND!·Nqz)¡(8hYA3¡L¡1pm)y6Sew"PIO(8Yvr/9XK·F!UTeo6Ta3TNk&"i3B',
 
         //DATABASE
         'springDataMongodbHost'               : 'localhost',
@@ -20,11 +20,11 @@ def springPropsMap_LOCAL = [
         'springServletMultipartMaxRequestSize': '50MB',
 
         //STORAGE FTP
-        'storageFtpHost'                      : '',
-        'storageFtpPort'                      : '',
-        'storageFtpUser'                      : '',
-        'storageFtpPass'                      : '',
-        'storageFtpPath'                      : '/'
+        'storageFtpHost'                      : '192.168.0.13',
+        'storageFtpPort'                      : '21',
+        'storageFtpUser'                      : 'multiuser',
+        'storageFtpPass'                      : '95123',
+        'storageFtpPath'                      : ''
 ]
 
 

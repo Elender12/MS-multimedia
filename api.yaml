@@ -1,0 +1,697 @@
+openapi: 3.0.1
+info:
+  title: Multimedia API (LOCAL)
+  description: Multimedia microservice. Detailed description of the Api.
+  contact:
+    name: Elena C.
+    email: elender1230@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+  - url: //localhost:9801/
+tags:
+  - name: home-controller
+    description: Home Controller
+  - name: multimedia-api-controller
+    description: the Multimedia API
+paths:
+  /:
+    get:
+      tags:
+        - home-controller
+      summary: index
+      operationId: indexUsingGET
+      responses:
+        200:
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+        401:
+          description: Unauthorized
+          content: {}
+        403:
+          description: Forbidden
+          content: {}
+        404:
+          description: Not Found
+          content: {}
+      deprecated: false
+      security:
+        - JWT:
+            - global
+  /config:
+    get:
+      tags:
+        - home-controller
+      summary: config
+      operationId: configUsingGET
+      responses:
+        200:
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+        401:
+          description: Unauthorized
+          content: {}
+        403:
+          description: Forbidden
+          content: {}
+        404:
+          description: Not Found
+          content: {}
+      deprecated: false
+      security:
+        - JWT:
+            - global
+  /download/{id}:
+    get:
+      tags:
+        - Multimedias
+      summary: Get file by id.
+      description: Return a file by id.
+      operationId: downloadFileByID
+      parameters:
+        - name: id
+          in: path
+          description: File UUID to download
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: OK.
+          content:
+            application/octet-stream:
+              schema:
+                $ref: '#/components/schemas/File'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/File'
+        401:
+          description: Unauthorized.
+          content:
+            application/octet-stream:
+              schema:
+                $ref: '#/components/schemas/Error'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: Forbidden.
+          content:
+            application/octet-stream:
+              schema:
+                $ref: '#/components/schemas/Error'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Not found.
+          content:
+            application/octet-stream:
+              schema:
+                $ref: '#/components/schemas/Error'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Server error.
+          content:
+            application/octet-stream:
+              schema:
+                $ref: '#/components/schemas/Error'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      deprecated: false
+      security:
+        - JWT:
+            - global
+  /healthcheck:
+    get:
+      tags:
+        - home-controller
+      summary: healthcheck
+      operationId: healthcheckUsingGET
+      responses:
+        200:
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+        401:
+          description: Unauthorized
+          content: {}
+        403:
+          description: Forbidden
+          content: {}
+        404:
+          description: Not Found
+          content: {}
+      deprecated: false
+      security:
+        - JWT:
+            - global
+  /multimedias:
+    get:
+      tags:
+        - Multimedias
+      summary: Get all Multimedias.
+      description: Returns all Multimedia objects.
+      operationId: getAllMultimedias
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MultimediaFile'
+        401:
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      deprecated: false
+      security:
+        - JWT:
+            - global
+    put:
+      tags:
+        - Multimedias
+      summary: Update an existing Multimedia.
+      description: Takes an existing Multimedia, updates it, and returns the new object.
+      operationId: updateMultimedia
+      parameters:
+        - name: id
+          in: query
+          description: Multimedia UUID to update
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: string
+            format: uuid
+        - name: throwExceptionIfNotExist
+          in: query
+          description: Throw an exception If the UUID doesn't exist (otherwise force
+            to save/update it)
+          allowEmptyValue: false
+          schema:
+            type: boolean
+            default: true
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  description: MultipartFile to update
+                  format: binary
+        required: true
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MultimediaFile'
+        201:
+          description: Created
+          content: {}
+        400:
+          description: Invalid Multimedia.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        401:
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      deprecated: false
+      security:
+        - JWT:
+            - global
+    post:
+      tags:
+        - Multimedias
+      summary: Add a new Multimedia.
+      description: Takes a Multimedia object, saves it, and returns it with the saved
+        id.
+      operationId: addMultimedia
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  description: MultipartFile to update
+                  format: binary
+        required: true
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MultimediaFile'
+        201:
+          description: Created
+          content: {}
+        400:
+          description: Invalid Multimedia.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        401:
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      deprecated: false
+      security:
+        - JWT:
+            - global
+  /multimedias/{id}:
+    get:
+      tags:
+        - Multimedias
+      summary: Get a Multimedia by id.
+      description: Returns one Multimedia by id.
+      operationId: getMultimediaByID
+      parameters:
+        - name: id
+          in: path
+          description: Multimedia UUID to get
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MultimediaFile'
+        401:
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      deprecated: false
+      security:
+        - JWT:
+            - global
+    delete:
+      tags:
+        - Multimedias
+      summary: Delete an existing Multimedia by id.
+      description: Takes an existing Multimedia object, deletes it, and returns the
+        deleted object.
+      operationId: deleteMultimedia
+      parameters:
+        - name: id
+          in: path
+          description: Multimedia UUID to delete
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MultimediaFile'
+        204:
+          description: No Content
+          content: {}
+        401:
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      deprecated: false
+      security:
+        - JWT:
+            - global
+components:
+  schemas:
+    Error:
+      title: Error
+      type: object
+      properties:
+        cause:
+          $ref: '#/components/schemas/Throwable'
+        localizedMessage:
+          type: string
+        message:
+          type: string
+        stackTrace:
+          type: array
+          items:
+            $ref: '#/components/schemas/StackTraceElement'
+        suppressed:
+          type: array
+          items:
+            $ref: '#/components/schemas/Throwable'
+    File:
+      title: File
+      type: object
+      properties:
+        absolute:
+          type: boolean
+        absoluteFile:
+          $ref: '#/components/schemas/File'
+        absolutePath:
+          type: string
+        canonicalFile:
+          $ref: '#/components/schemas/File'
+        canonicalPath:
+          type: string
+        directory:
+          type: boolean
+        executable:
+          type: boolean
+        file:
+          type: boolean
+        freeSpace:
+          type: integer
+          format: int64
+        hidden:
+          type: boolean
+        lastModified:
+          type: integer
+          format: int64
+        name:
+          type: string
+        parent:
+          type: string
+        parentFile:
+          $ref: '#/components/schemas/File'
+        path:
+          type: string
+        readable:
+          type: boolean
+        totalSpace:
+          type: integer
+          format: int64
+        usableSpace:
+          type: integer
+          format: int64
+        writable:
+          type: boolean
+    InputStream:
+      title: InputStream
+      type: object
+    MultimediaFile:
+      title: MultimediaFile
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        extension:
+          type: string
+        author:
+          type: string
+          format: uuid
+        narrator:
+          type: string
+          format: uuid
+        fullName:
+          type: string
+        mediaType:
+          type: string
+        length:
+          type: integer
+          format: int64
+        downloadCounter:
+          type: integer
+          format: int64
+        modified:
+          type: string
+          description: Field provided by server.
+          format: date-time
+        created:
+          type: string
+          description: Field provided by server.
+          format: date-time
+    Resource:
+      title: Resource
+      type: object
+      properties:
+        description:
+          type: string
+        file:
+          $ref: '#/components/schemas/File'
+        filename:
+          type: string
+        inputStream:
+          $ref: '#/components/schemas/InputStream'
+        open:
+          type: boolean
+        readable:
+          type: boolean
+        uri:
+          $ref: '#/components/schemas/URI'
+        url:
+          $ref: '#/components/schemas/URL'
+    StackTraceElement:
+      title: StackTraceElement
+      type: object
+      properties:
+        classLoaderName:
+          type: string
+        className:
+          type: string
+        fileName:
+          type: string
+        lineNumber:
+          type: integer
+          format: int32
+        methodName:
+          type: string
+        moduleName:
+          type: string
+        moduleVersion:
+          type: string
+        nativeMethod:
+          type: boolean
+    Throwable:
+      title: Throwable
+      type: object
+      properties:
+        cause:
+          $ref: '#/components/schemas/Throwable'
+        localizedMessage:
+          type: string
+        message:
+          type: string
+        stackTrace:
+          type: array
+          items:
+            $ref: '#/components/schemas/StackTraceElement'
+        suppressed:
+          type: array
+          items:
+            $ref: '#/components/schemas/Throwable'
+    URI:
+      title: URI
+      type: object
+      properties:
+        absolute:
+          type: boolean
+        authority:
+          type: string
+        fragment:
+          type: string
+        host:
+          type: string
+        opaque:
+          type: boolean
+        path:
+          type: string
+        port:
+          type: integer
+          format: int32
+        query:
+          type: string
+        rawAuthority:
+          type: string
+        rawFragment:
+          type: string
+        rawPath:
+          type: string
+        rawQuery:
+          type: string
+        rawSchemeSpecificPart:
+          type: string
+        rawUserInfo:
+          type: string
+        scheme:
+          type: string
+        schemeSpecificPart:
+          type: string
+        userInfo:
+          type: string
+    URL:
+      title: URL
+      type: object
+      properties:
+        authority:
+          type: string
+        content:
+          type: object
+          properties: {}
+        defaultPort:
+          type: integer
+          format: int32
+        deserializedFields:
+          $ref: '#/components/schemas/URLStreamHandler'
+        file:
+          type: string
+        host:
+          type: string
+        path:
+          type: string
+        port:
+          type: integer
+          format: int32
+        protocol:
+          type: string
+        query:
+          type: string
+        ref:
+          type: string
+        serializedHashCode:
+          type: integer
+          format: int32
+        userInfo:
+          type: string
+    URLStreamHandler:
+      title: URLStreamHandler
+      type: object
+  securitySchemes:
+    JWT:
+      type: apiKey
+      name: Authorization
+      in: header

@@ -1,6 +1,7 @@
 package com.ecirstea.multimedia.model;
 
 import io.swagger.annotations.ApiModelProperty;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -18,7 +19,7 @@ public class MultimediaFile {
     private UUID id;
 
     @ApiModelProperty(position = 1)
-    private String name;
+    private String title;
 
     @ApiModelProperty(position = 2)
     private String extension;
@@ -26,34 +27,65 @@ public class MultimediaFile {
     @ApiModelProperty(position = 3)
     private UUID author;
 
-    @Transient
     @ApiModelProperty(position = 4)
+    private UUID narrator;
+    @Transient
+    @ApiModelProperty(position = 5)
     private String fullName;
 
-    @ApiModelProperty(position = 5)
+    @ApiModelProperty(position = 6)
     private String mediaType;
 
-    @ApiModelProperty(position = 6)
+    @ApiModelProperty(position = 7)
     private long length;
 
-    @ApiModelProperty(position = 7)
+    @ApiModelProperty(position = 8)
     private long downloadCounter;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    @ApiModelProperty(position = 7, value = "Field provided by server.")
+    @ApiModelProperty(position = 9, value = "Field provided by server.")
     private Date modified;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    @ApiModelProperty(position = 8, value = "Field provided by server.")
+    @ApiModelProperty(position = 10, value = "Field provided by server.")
     private Date created;
 
-    public MultimediaFile( String fullName, String author, String mediaType, long length )
-    {
-        this.name = getNameByStringHandling(fullName).get();
-        this.extension = getExtensionByStringHandling(fullName).get();
-        this.fullName = name + "." + extension;
+
+    public MultimediaFile(){}
+
+    public MultimediaFile(UUID id, String title, String extension, UUID author, UUID narrator, String fullName, String mediaType, long length, long downloadCounter, Date modified, Date created) {
+        this.id = id;
+        this.title = title;
+        this.extension = extension;
+        this.author = author;
+        this.narrator = narrator;
+        this.fullName = fullName;
         this.mediaType = mediaType;
         this.length = length;
+        this.downloadCounter = downloadCounter;
+        this.modified = modified;
+        this.created = created;
+    }
+
+    public MultimediaFile(String fullName, String author, String mediaType, long length )
+    {
+        // this.title = getNameByStringHandling(fullName).orElse(null);
+        this.title = removeFileExtension(fullName, true);
+        // this.extension = getExtensionByStringHandling(fullName).orElse(null);
+        this.extension = getExtensionByApacheCommonLib(fullName);
+        this.fullName = title + "." + extension;
+        this.mediaType = mediaType;
+        this.length = length;
+    }
+
+    public MultimediaFile(String originalFilename, String contentType, long size) {
+        this.title = getNameByStringHandling(originalFilename).orElse(null);
+     //   this.extension = getExtensionByStringHandling(fullName).orElse(null);
+        this.extension = getExtensionByApacheCommonLib(originalFilename);
+        this.fullName = title + "." + extension;
+        this.mediaType = contentType;
+        this.length = size;
+
     }
 
     public UUID getId() {
@@ -73,13 +105,13 @@ public class MultimediaFile {
     {
         if( fullName == null )
         {
-            fullName = name + "." + extension;
+            fullName = title + "." + extension;
         }
         return fullName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public UUID getAuthor() {
@@ -88,6 +120,18 @@ public class MultimediaFile {
 
     public void setAuthor(UUID author) {
         this.author = author;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public UUID getNarrator() {
+        return narrator;
+    }
+
+    public void setNarrator(UUID narrator) {
+        this.narrator = narrator;
     }
 
     public String getExtension() {
@@ -150,6 +194,18 @@ public class MultimediaFile {
     }
 
 
+    public String getExtensionByApacheCommonLib(String filename) {
+        return FilenameUtils.getExtension(filename);
+    }
+
+    public static String removeFileExtension(String filename, boolean removeAllExtensions) {
+        if (filename == null || filename.isEmpty()) {
+            return filename;
+        }
+
+        String extPattern = "(?<!^)[.]" + (removeAllExtensions ? ".*" : "[^.]*$");
+        return filename.replaceAll(extPattern, "");
+    }
 
     //https://www.baeldung.com/java-file-extension
     private Optional<String> getExtensionByStringHandling( String filename )

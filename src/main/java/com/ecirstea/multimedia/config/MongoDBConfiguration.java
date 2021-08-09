@@ -9,10 +9,8 @@ import org.bson.UuidRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
-
 import java.util.Collection;
 import java.util.Collections;
-
 
 
 @Configuration
@@ -33,15 +31,11 @@ public class MongoDBConfiguration extends AbstractMongoClientConfiguration
     @Value("${spring.data.mongodb.database}")
     private String mongoDBDatabase;
 
-
-
     @Override
     protected String getDatabaseName()
     {
         return mongoDBDatabase;
     }
-
-
 
     @Override
     public MongoClient mongoClient()
@@ -66,7 +60,7 @@ public class MongoDBConfiguration extends AbstractMongoClientConfiguration
     @Override
     public Collection getMappingBasePackages()
     {
-        return Collections.singleton("com.movicoders.rehaviva.multimedia.config");
+        return Collections.singleton("com.ecirstea.multimedia.config");
     }
 
 }
