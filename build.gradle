@@ -2,7 +2,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 buildscript {
 	ext {
-		springBootVersion = '2.3.4.RELEASE'
+		springBootVersion = '2.5.3'
 	}
 	repositories {
 		mavenCentral()
@@ -14,7 +14,7 @@ buildscript {
 plugins {
 	id 'maven-publish'
 	id 'eclipse'
-	id "org.springframework.boot" version "2.3.4.RELEASE"
+	id "org.springframework.boot" version "2.5.3"
 }
 apply plugin: 'java'
 apply plugin: 'eclipse'
@@ -22,7 +22,12 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
 repositories {
+
 	mavenCentral()
+	maven{
+		url "https://plugins.gradle.org/ms2/"
+	}
+
 }
 
 group = 'com.ecirstea.multimedia'
@@ -35,13 +40,13 @@ apply from: "${project.projectDir}/src/main/resources/properties.gradle"
 def currentProfile = 'LOCAL'
 
 if (project.hasProperty('profile')) {
-	currentProfile = project.properties['profile'].toString().toUpperCase();
+	currentProfile = project.properties['profile'].toString().toUpperCase()
 }
 
 println("Current Profile is ${currentProfile}")
 def currentSpringProperties = project.springPropertiesContainer[currentProfile]
 
-currentSpringProperties['destinationEnvironment'] = currentProfile;
+currentSpringProperties['destinationEnvironment'] = currentProfile
 
 publishing {
 	publications {
@@ -59,9 +64,6 @@ processResources {
 
 jar {
 	enabled = true
-	baseName = rootProject.name
-
-
 }
 
 
@@ -75,6 +77,9 @@ configurations.all {
 bootJar {
 	baseName = rootProject.name
 
+}
+ext {
+	set('springCloudVersion', "2020.0.3")
 }
 
 
@@ -98,10 +103,14 @@ dependencies {
 	implementation group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
 	implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
 	implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
+	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 
+}
 
-
-
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
 }
 
 test {
